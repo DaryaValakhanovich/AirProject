@@ -60,7 +60,7 @@ public class FlightDao extends BaseDao<Flight>{
         return "INSERT INTO flights (departure, arrival, numberOfFreeSeats, startAirport, finalAirport, planeId) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
     }
-
+/*
     public List<Flight> findRightFlights(LocalDate departure, int numberOfSeats,
                                                 String startAirport, String finalAirport)  {
         List<Flight> flights = new ArrayList<>();
@@ -112,7 +112,7 @@ public class FlightDao extends BaseDao<Flight>{
                     if (currentFlight.getFinalAirport().equals(finalAirport)) {
                         resultFlights.addAll(previousFlights);
                         resultFlights.add(currentFlight);
-
+                        resultFlights.add(null);
                     } else {
                         probablyFlights.add(currentFlight);
                     }
@@ -126,13 +126,56 @@ public class FlightDao extends BaseDao<Flight>{
                     findDifficultWay2(probablyFlight.getFinalAirport(), finalAirport, allFlights, newPreviousFlights);
             if (!newFlights.isEmpty()) {
                 resultFlights.addAll(newFlights);
-                resultFlights.add(null);
             }
         }
         return resultFlights;
     }
 
+*/
 
+
+
+    public List<Flight> findFlightsForDifficultWay(LocalDate departure, int numberOfSeats)  {
+        List<Flight> flights = new ArrayList<>();
+        try (Connection connection = ConnectionManager.getConnection()) {
+            String preparesStatement2 = "SELECT * FROM flights WHERE (departure::date = ? OR departure::date = ?) AND numberOfFreeSeats >= ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(preparesStatement2)) {
+                preparedStatement.setDate(1, Date.valueOf(departure));
+                preparedStatement.setDate(2, Date.valueOf(departure.plusDays(1)));
+                preparedStatement.setInt(3, numberOfSeats);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        flights.add(getInstance().createFromResultSet(resultSet));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return flights;
+    }
+
+    public List<Flight> findRightFlights(LocalDate departure, int numberOfSeats, String startAirport, String finalAirport)  {
+        List<Flight> flights = new ArrayList<>();
+        try (Connection connection = ConnectionManager.getConnection()) {
+            String preparesStatement1 = "SELECT * FROM flights " +
+                    "WHERE (departure::date = ?) AND numberOfFreeSeats >= ? AND startAirport = ? AND finalAirport = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(preparesStatement1)) {
+                preparedStatement.setDate(1, Date.valueOf(departure));
+                preparedStatement.setInt(2, numberOfSeats);
+                preparedStatement.setString(3, startAirport);
+                preparedStatement.setString(4, finalAirport);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        flights.add(getInstance().createFromResultSet(resultSet));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return flights;
+    }
     public void buyTicket(long id, int numberOfSeats) {
         try (Connection connection = ConnectionManager.getConnection()) {
             String preparesStatement3 = "UPDATE flights SET numberOfFreeSeats = (numberOfFreeSeats - ?) WHERE id = ?;";

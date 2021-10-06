@@ -1,5 +1,6 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html>
@@ -13,11 +14,6 @@
 <jsp:include page="_menu.jsp"></jsp:include>
 
 <h3>Suitable flights</h3>
-<h3>${flights}</h3>
-<c:forEach items="${flights}" var="flight">
-    ${flight}
-    ${flight.id}
-</c:forEach>
 
 <p style="color: red;">${errorString}</p>
 <form method="POST" action="${pageContext.request.contextPath}/chooseFlight">
@@ -41,12 +37,14 @@
             <td>${flight.startAirport}</td>
             <td>${flight.finalAirport}</td>
             <td>${flight.plane.model}</td>
-            <td>300</td>
+            <td>${flight.price}</td>
         </tr>
     </c:forEach>
 </table>
-    <p><input type="submit" value="Отправить">
+    <input type="number" name="numberOfSeats" value= ${numberOfSeats}>
 
+    <p><input type="submit" value="Отправить">
+        <a href="${pageContext.request.contextPath}/">Cancel</a>
 <jsp:include page="_footer.jsp"></jsp:include>
 
 </body>

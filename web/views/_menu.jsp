@@ -17,7 +17,15 @@
   <a href="${pageContext.request.contextPath}/findFlight">Find flight</a>
   |
   <a href="${pageContext.request.contextPath}/login">Login</a>
-
+  |
   <a href="${pageContext.request.contextPath}/makeAdmin">Make admin</a>
+  |
+  <a href="${pageContext.request.contextPath}/showMyTickets">Show my tickets</a>
+  |
+  <a href="${pageContext.request.contextPath}/createPlane">Create plane</a>
+  |
+  <a href="${pageContext.request.contextPath}/createFlight">Create flight</a>
+  |
+  <a href="${pageContext.request.contextPath}/logout">Log out</a>
 
 </div>

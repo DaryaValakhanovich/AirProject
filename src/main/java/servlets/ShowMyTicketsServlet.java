@@ -1,5 +1,9 @@
 package servlets;
 
+import entities.Ticket;
+import services.TicketService;
+import utils.MyUtils;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,21 +12,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serial;
+import java.util.List;
 
-@WebServlet(urlPatterns = { "/findFlight" })
-public class FindFlightServlet extends HttpServlet {
+
+@WebServlet(urlPatterns = { "/showMyTickets" })
+public class ShowMyTicketsServlet extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public FindFlightServlet() {
+    public ShowMyTicketsServlet() {
         super();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        List<Ticket> tickets = TicketService.getInstance().findByAccountEmail(MyUtils.getLoginedUser(request.getSession()).getEmail());
+        request.setAttribute("tickets", tickets);
+
         RequestDispatcher dispatcher = this.getServletContext()
-                .getRequestDispatcher("/views/findFlightView.jsp");
+                .getRequestDispatcher("/views/showMyTickets.jsp");
         dispatcher.forward(request, response);
     }
 }

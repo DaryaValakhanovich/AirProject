@@ -1,7 +1,7 @@
 package servlets;
 
-import dao.AccountDao;
 import entities.Account;
+import services.AccountService;
 import utils.MyUtils;
 
 import javax.servlet.RequestDispatcher;
@@ -44,11 +44,13 @@ public class LoginServlet extends HttpServlet {
         boolean hasError = false;
         String errorString = null;
 
+        System.out.println(email);
+
         if (email == null || password == null || email.length() == 0 || password.length() == 0) {
             hasError = true;
             errorString = "Required username and password!";
         } else {
-            user = AccountDao.getInstance().findByEmail(email);
+            user = AccountService.getInstance().findByEmail(email);
             if (user == null) {
                 hasError = true;
                 errorString = "User Name or password invalid";

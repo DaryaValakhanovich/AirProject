@@ -4,6 +4,8 @@ import entities.Ticket;
 import utils.ConnectionManager;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TicketDao extends BaseDao<Ticket> {
 
@@ -53,14 +55,6 @@ public class TicketDao extends BaseDao<Ticket> {
                 "VALUES (?, ?, ?, ?)";
     }
 
-    @Override
-    public Ticket create(Ticket object) {
-        Ticket ticket = super.create(object);
-        SeatDao.getInstance().create(ticket.getId(), ticket.getFlight().getNumberOfFreeSeats() ,ticket.getNumberOfSeats());
-        FlightDao.getInstance().buyTicket(ticket.getId(), ticket.getNumberOfSeats());
-        return super.create(object);
-    }
-
     public void deactivate(Ticket ticket){
         try (Connection connection = ConnectionManager.getConnection()) {
                 try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -73,5 +67,23 @@ public class TicketDao extends BaseDao<Ticket> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Ticket> findByAccountId(long id){
+        List<Ticket> list = new ArrayList<>();
+        try (Connection connection = ConnectionManager.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM tickets WHERE accountId = ?")) {
+                preparedStatement.setLong(1, id);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        list.add(createFromResultSet(resultSet));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

@@ -1,3 +1,4 @@
+
 <%--
   Created by IntelliJ IDEA.
   User: User
@@ -15,7 +16,7 @@
     <div style="float: right; padding: 10px; text-align: right;">
 
         <!-- User store in session with attribute: loginedUser -->
-        Hello <b>${loginedUser.email}</b>
+        Hello <b> ${loginedUser.email}</b>
         <br/>
         Search <input name="search">
 

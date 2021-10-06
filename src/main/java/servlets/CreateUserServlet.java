@@ -1,7 +1,7 @@
 package servlets;
 
-import dao.AccountDao;
 import entities.Account;
+import services.AccountService;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -39,8 +39,7 @@ public class CreateUserServlet extends HttpServlet {
         String number = request.getParameter("number");
 
         Account account = new Account(email, password, number);
-        account = AccountDao.getInstance().create(account);
-        System.out.println(account);
+        account = AccountService.getInstance().create(account);
 
         String errorString = null;
         request.setAttribute("errorString", errorString);
@@ -50,8 +49,7 @@ public class CreateUserServlet extends HttpServlet {
                     .getRequestDispatcher("/WEB-INF/views/createUserView.jsp");
             dispatcher.forward(request, response);
         } else {
-            response.sendRedirect(request.getContextPath() + "/home");
+            response.sendRedirect(request.getContextPath() + "/showSeat");
         }
     }
-
 }

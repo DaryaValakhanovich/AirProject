@@ -10,6 +10,7 @@ public class Flight extends BaseEntity {
     private String startAirport;
     private String finalAirport;
     private Plane plane;
+    private String price;
 
     public Flight() {
     }
@@ -68,6 +69,14 @@ public class Flight extends BaseEntity {
 
     public void setPlane(Plane plane) {
         this.plane = plane;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     @Override
