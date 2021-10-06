@@ -3,13 +3,10 @@ package utils;
 import entities.Account;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class AppUtils {
-
-    public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";
 
     private static final String ATT_NAME_USER_NAME = "ATTRIBUTE_FOR_STORE_USER_NAME_IN_COOKIE";
 
@@ -31,18 +28,6 @@ public class AppUtils {
         // 1 день (Конвертированный в секунды)
         cookieUserName.setMaxAge(24 * 60 * 60);
         response.addCookie(cookieUserName);
-    }
-
-    public static String getUserNameInCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (ATT_NAME_USER_NAME.equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
     }
 
     // Удалить Cookie пользователя

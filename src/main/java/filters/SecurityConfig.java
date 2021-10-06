@@ -8,7 +8,7 @@ public class SecurityConfig {
 
     // String: Role
     // List<String>: urlPatterns.
-    private static final Map<Role, List<String>> mapConfig = new HashMap<Role, List<String>>();
+    private static final Map<Role, List<String>> mapConfig = new HashMap<>();
 
     static {
         init();
@@ -16,7 +16,7 @@ public class SecurityConfig {
 
     private static void init() {
         // Конфигурация для роли "USER".
-        List<String> urlPatterns1 = new ArrayList<String>();
+        List<String> urlPatterns1 = new ArrayList<>();
 
         urlPatterns1.add("/showMyTickets");
         urlPatterns1.add("/findFlight");
@@ -24,7 +24,7 @@ public class SecurityConfig {
         mapConfig.put(Role.USER, urlPatterns1);
 
         // Конфигурация для роли "ADMIN".
-        List<String> urlPatterns2 = new ArrayList<String>();
+        List<String> urlPatterns2 = new ArrayList<>();
 
         urlPatterns2.add("/makeAdmin");
         urlPatterns2.add("/createPlane");
