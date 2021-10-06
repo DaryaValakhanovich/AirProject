@@ -60,80 +60,6 @@ public class FlightDao extends BaseDao<Flight>{
         return "INSERT INTO flights (departure, arrival, numberOfFreeSeats, startAirport, finalAirport, planeId) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
     }
-/*
-    public List<Flight> findRightFlights(LocalDate departure, int numberOfSeats,
-                                                String startAirport, String finalAirport)  {
-        List<Flight> flights = new ArrayList<>();
-        try (Connection connection = ConnectionManager.getConnection()) {
-            String preparesStatement1 = "SELECT * FROM flights " +
-                    "WHERE departure = ? AND numberOfFreeSeats >= ? AND startAirport = ? AND finalAirport = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(preparesStatement1)) {
-                preparedStatement.setTimestamp(1, Timestamp.valueOf(departure.atStartOfDay()));
-                preparedStatement.setInt(2, numberOfSeats);
-                preparedStatement.setString(3, startAirport);
-                preparedStatement.setString(4, finalAirport);
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        flights.add(getInstance().createFromResultSet(resultSet));
-                    }
-                }
-            }
-            if(flights.isEmpty()){
-                String preparesStatement2 = "SELECT * FROM flights WHERE (departure::date = ? OR departure::date = ?) AND numberOfFreeSeats >= ?";
-                try (PreparedStatement preparedStatement = connection.prepareStatement(preparesStatement2)) {
-                    preparedStatement.setDate(1, Date.valueOf(departure));
-                    preparedStatement.setDate(2, Date.valueOf(departure.plusDays(1)));
-                    preparedStatement.setInt(3, numberOfSeats);
-                    try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                        while (resultSet.next()) {
-                            flights.add(getInstance().createFromResultSet(resultSet));
-                        }
-                        flights = findDifficultWay2(startAirport, finalAirport, flights, new ArrayList<>());
-
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return flights;
-    }
-
-
-    private List<Flight> findDifficultWay2(String startAirport, String finalAirport,
-                                                 List<Flight> allFlights, List<Flight> previousFlights) {
-        List<Flight> resultFlights = new ArrayList<>();
-        List<Flight> probablyFlights = new ArrayList<>();
-        for (Flight currentFlight : allFlights) {
-            if (startAirport.equals(currentFlight.getStartAirport())){
-                if (previousFlights.isEmpty() ||
-                        previousFlights.get(previousFlights.size() - 1).getArrival()
-                                .isBefore(currentFlight.getDeparture())) {
-                    if (currentFlight.getFinalAirport().equals(finalAirport)) {
-                        resultFlights.addAll(previousFlights);
-                        resultFlights.add(currentFlight);
-                        resultFlights.add(null);
-                    } else {
-                        probablyFlights.add(currentFlight);
-                    }
-                }
-            }
-        }
-        for (Flight probablyFlight : probablyFlights) {
-            List<Flight> newPreviousFlights = new ArrayList<>(previousFlights);
-            newPreviousFlights.add(probablyFlight);
-            List<Flight> newFlights =
-                    findDifficultWay2(probablyFlight.getFinalAirport(), finalAirport, allFlights, newPreviousFlights);
-            if (!newFlights.isEmpty()) {
-                resultFlights.addAll(newFlights);
-            }
-        }
-        return resultFlights;
-    }
-
-*/
-
-
 
     public List<Flight> findFlightsForDifficultWay(LocalDate departure, int numberOfSeats)  {
         List<Flight> flights = new ArrayList<>();
@@ -176,6 +102,7 @@ public class FlightDao extends BaseDao<Flight>{
         }
         return flights;
     }
+
     public void buyTicket(long id, int numberOfSeats) {
         try (Connection connection = ConnectionManager.getConnection()) {
             String preparesStatement3 = "UPDATE flights SET numberOfFreeSeats = (numberOfFreeSeats - ?) WHERE id = ?;";

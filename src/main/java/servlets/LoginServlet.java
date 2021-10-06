@@ -2,7 +2,7 @@ package servlets;
 
 import entities.Account;
 import services.AccountService;
-import utils.MyUtils;
+import utils.AppUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
             errorString = "Required username and password!";
         } else {
             user = AccountService.getInstance().findByEmail(email);
-            if (user == null) {
+            if (user.getId() == 0L) {
                 hasError = true;
                 errorString = "User Name or password invalid";
             }
@@ -70,12 +70,12 @@ public class LoginServlet extends HttpServlet {
             dispatcher.forward(request, response);
         } else {
             HttpSession session = request.getSession();
-            MyUtils.storeLoginedUser(session, user);
+            AppUtils.storeLoginedUser(session, user);
 
             if (remember) {
-                MyUtils.storeUserCookie(response, user);
+                AppUtils.storeUserCookie(response, user);
             } else {
-                MyUtils.deleteUserCookie(response);
+                AppUtils.deleteUserCookie(response);
             }
 
             response.sendRedirect(request.getContextPath() + "/home");

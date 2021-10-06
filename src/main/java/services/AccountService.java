@@ -2,6 +2,7 @@ package services;
 
 import dao.AccountDao;
 import entities.Account;
+import utils.StringUtils;
 
 public class AccountService {
     private AccountService() {

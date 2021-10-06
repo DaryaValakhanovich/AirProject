@@ -2,7 +2,7 @@ package servlets;
 
 import entities.Ticket;
 import services.TicketService;
-import utils.MyUtils;
+import utils.AppUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -27,7 +27,7 @@ public class ShowMyTicketsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Ticket> tickets = TicketService.getInstance().findByAccountEmail(MyUtils.getLoginedUser(request.getSession()).getEmail());
+        List<Ticket> tickets = TicketService.getInstance().findByAccountEmail(AppUtils.getLoginedUser(request.getSession()).getEmail());
         request.setAttribute("tickets", tickets);
 
         RequestDispatcher dispatcher = this.getServletContext()

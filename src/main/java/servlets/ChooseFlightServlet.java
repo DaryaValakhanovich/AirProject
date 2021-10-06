@@ -5,7 +5,7 @@ import entities.Ticket;
 import services.AccountService;
 import services.FlightService;
 import services.TicketService;
-import utils.MyUtils;
+import utils.AppUtils;
 import utils.TimeUtils;
 
 import javax.servlet.RequestDispatcher;
@@ -33,49 +33,78 @@ public class ChooseFlightServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LocalDate departure = TimeUtils
-                .convertToLocalDateViaMilisecond(Date.valueOf(request.getParameter("departure")));
-        int numberOfSeats = Integer.parseInt(request.getParameter("numberOfSeats"));
+        StringBuilder errorString = new StringBuilder();
+        String date = request.getParameter("departure");
+        LocalDate departure = null;
+        if(date.isEmpty()){
+           errorString.append("Enter date. ");
+        }else {
+            departure = TimeUtils
+                    .convertToLocalDateViaMilisecond(Date.valueOf(request.getParameter("departure")));
+        }
+        int numberOfSeats = 0;
+        if(request.getParameter("numberOfSeats").isEmpty()  || Integer.parseInt(request.getParameter("numberOfSeats"))<=0){
+            errorString.append("Enter correct number of seats. ");
+        } else {
+            numberOfSeats = Integer.parseInt(request.getParameter("numberOfSeats"));
+        }
+
         String startAirport = request.getParameter("startAirport");
         String finalAirport = request.getParameter("finalAirport");
 
-        List<Flight> flights = FlightService.getInstance()
-                .findRightFlights(departure, numberOfSeats, startAirport, finalAirport);
-
-        if(flights.isEmpty()) {
-            flights = FlightService.getInstance().findRightDifficultWay(departure, numberOfSeats,startAirport,finalAirport);
-            List<List<Flight>> newFlights = new ArrayList<>();
-            List<Flight> partOfNewFlights = new ArrayList<>();
-            for (Flight flight:flights) {
-                if (flight == null) {
-                    newFlights.add(partOfNewFlights);
-                    partOfNewFlights= new ArrayList<>();
-                } else {
-                    partOfNewFlights.add(flight);
-                }
-            }
-            request.setAttribute("listsOfFlights", newFlights);
-            for (List<Flight> listFlight:newFlights) {
-                for (Flight flight : listFlight) {
-                    flight.setPrice(FlightService.getInstance().getPrice(flight, numberOfSeats));
-                }
-            }
-            request.setAttribute("numberOfSeats", numberOfSeats);
-            RequestDispatcher dispatcher = this.getServletContext()
-                    .getRequestDispatcher("/views/chooseDifficultWayView.jsp");
-            dispatcher.forward(request, response);
-        } else {
-            for (Flight flight:flights) {
-                flight.setPrice(FlightService.getInstance().getPrice(flight,numberOfSeats));
-            }
-            request.setAttribute("flights", flights);
-            request.setAttribute("numberOfSeats", numberOfSeats);
-
-            RequestDispatcher dispatcher = this.getServletContext()
-                    .getRequestDispatcher("/views/chooseFlightsView.jsp");
-            dispatcher.forward(request, response);
+        if(startAirport.isEmpty() || finalAirport.isEmpty()){
+            errorString.append("Enter airport. ");
         }
 
+        if (errorString.isEmpty()) {
+            List<Flight> flights = FlightService.getInstance()
+                    .findRightFlights(departure, numberOfSeats, startAirport, finalAirport);
+
+            if (flights.isEmpty()) {
+                flights = FlightService.getInstance().findRightDifficultWay(departure, numberOfSeats, startAirport, finalAirport);
+                List<List<Flight>> newFlights = new ArrayList<>();
+                List<Flight> partOfNewFlights = new ArrayList<>();
+                for (Flight flight : flights) {
+                    if (flight == null) {
+                        newFlights.add(partOfNewFlights);
+                        partOfNewFlights = new ArrayList<>();
+                    } else {
+                        partOfNewFlights.add(flight);
+                    }
+                }
+                if (newFlights.isEmpty()) {
+                    request.setAttribute("errorString", "There are no flights for you.");
+                    RequestDispatcher dispatcher = this.getServletContext()
+                            .getRequestDispatcher("/views/findFlightView.jsp");
+                    dispatcher.forward(request, response);
+                }
+                request.setAttribute("listsOfFlights", newFlights);
+                for (List<Flight> listFlight : newFlights) {
+                    for (Flight flight : listFlight) {
+                        flight.setPrice(FlightService.getInstance().getPrice(flight, numberOfSeats));
+                    }
+                }
+                request.setAttribute("numberOfSeats", numberOfSeats);
+                RequestDispatcher dispatcher = this.getServletContext()
+                        .getRequestDispatcher("/views/chooseDifficultWayView.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                for (Flight flight : flights) {
+                    flight.setPrice(FlightService.getInstance().getPrice(flight, numberOfSeats));
+                }
+                request.setAttribute("flights", flights);
+                request.setAttribute("numberOfSeats", numberOfSeats);
+
+                RequestDispatcher dispatcher = this.getServletContext()
+                        .getRequestDispatcher("/views/chooseFlightsView.jsp");
+                dispatcher.forward(request, response);
+            }
+        } else {
+            request.setAttribute("errorString", errorString);
+            RequestDispatcher dispatcher = this.getServletContext()
+                    .getRequestDispatcher("/views/findFlightView.jsp");
+            dispatcher.forward(request, response);
+        }
     }
 
     @Override
@@ -85,20 +114,18 @@ public class ChooseFlightServlet extends HttpServlet {
         int flightId = Integer.parseInt(request.getParameter("flightId"));
         ticket.setFlight(FlightService.getInstance().findById(flightId));
         ticket.setAccountId(AccountService.getInstance().findByEmail
-                (MyUtils.getLoginedUser(request.getSession()).getEmail()).getId());
+                (AppUtils.getLoginedUser(request.getSession()).getEmail()).getId());
         ticket.setNumberOfSeats(Integer.parseInt(request.getParameter("numberOfSeats")));
-        TicketService.getInstance().create(ticket);
+        Ticket ticket1 = TicketService.getInstance().create(ticket);
+
+        if(ticket1.getId()==0L){
+            request.setAttribute("errorString", "Something go wrong");
+            RequestDispatcher dispatcher = this.getServletContext()
+                    .getRequestDispatcher("/views/chooseFlightsView.jsp");
+            dispatcher.forward(request, response);
+        }
 
         request.setAttribute("ticketId", ticket.getId());
-        String errorString = null;
-
-        request.setAttribute("errorString", errorString);
-        if (errorString != null) {
-            RequestDispatcher dispatcher = this.getServletContext()
-                    .getRequestDispatcher("/WEB-INF/views/chooseFlightsView.jsp.jsp");
-            dispatcher.forward(request, response);
-        } else {
-            response.sendRedirect(request.getContextPath() + "/showMyTickets");
-        }
+        response.sendRedirect(request.getContextPath() + "/showMyTickets");
     }
 }

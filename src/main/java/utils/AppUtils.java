@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class MyUtils {
+public class AppUtils {
 
     public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";
 

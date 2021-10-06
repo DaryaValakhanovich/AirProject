@@ -1,7 +1,7 @@
 package filters;
 
 import entities.Role;
-import utils.MyUtils;
+import utils.AppUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -24,7 +24,7 @@ public class SecurityUtils {
     // Проверить имеет ли данный 'request' подходящую роль?
     public static boolean hasPermission(HttpServletRequest request) {
         String urlPattern = UrlPatternUtils.getUrlPattern(request);
-        Role role = MyUtils.getLoginedUser(request.getSession()).getRole();
+        Role role = AppUtils.getLoginedUser(request.getSession()).getRole();
         List<String> urlPatterns = SecurityConfig.getUrlPatternsForRole(role);
         return urlPatterns != null && urlPatterns.contains(urlPattern);
     }

@@ -5,9 +5,8 @@ import entities.Ticket;
 import services.AccountService;
 import services.FlightService;
 import services.TicketService;
-import utils.MyUtils;
+import utils.AppUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +21,7 @@ public class ChooseDifficultWayServlet extends HttpServlet {
         Flight flight;
         Ticket ticket = new Ticket();
         ticket.setAccountId(AccountService.getInstance().findByEmail
-                (MyUtils.getLoginedUser(request.getSession()).getEmail()).getId());
+                (AppUtils.getLoginedUser(request.getSession()).getEmail()).getId());
         ticket.setNumberOfSeats(Integer.parseInt(request.getParameter("numberOfSeats")));
 
         for (String flightString:listOfFlights) {

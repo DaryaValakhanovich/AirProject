@@ -58,7 +58,6 @@
     </table>
     <var type="number" name="numberOfSeats" value= ${numberOfSeats}>
 
-    <p><input type="submit" value="Отправить">
         <a href="${pageContext.request.contextPath}/">Cancel</a>
         <jsp:include page="_footer.jsp"></jsp:include>
 

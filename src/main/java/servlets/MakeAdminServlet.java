@@ -39,20 +39,20 @@ public class MakeAdminServlet extends HttpServlet {
 
         if (email == null) {
             hasError = true;
-            errorString = "Required username and password!";
+            errorString = "Required email!";
         } else {
             Account account = AccountService.getInstance().findByEmail(email);
-            if (account == null) {
+            if (account.getId() == 0L) {
                 hasError = true;
-                errorString = "User Name or password invalid";
+                errorString = "There is no such user!";
             } else {
                 AccountService.getInstance().makeAdmin(account.getId());
             }
         }
         if (hasError) {
-            RequestDispatcher dispatcher //
+            request.setAttribute("errorString", errorString);
+            RequestDispatcher dispatcher
                     = this.getServletContext().getRequestDispatcher("/WEB-INF/views/makeAdmin.jsp");
-
             dispatcher.forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/home");

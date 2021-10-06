@@ -61,6 +61,4 @@ public class PlaneDao extends BaseDao<Plane> {
         return "INSERT INTO planes (numberOfSeats, weight, cruisingSpeed, model, company, maxFlightAltitude, maxRangeOfFlight) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
     }
-
-
 }

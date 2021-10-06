@@ -2,6 +2,7 @@ package servlets;
 
 import entities.Account;
 import services.AccountService;
+import utils.StringUtils;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -38,18 +39,26 @@ public class CreateUserServlet extends HttpServlet {
         String password = request.getParameter("password");
         String number = request.getParameter("number");
 
-        Account account = new Account(email, password, number);
-        account = AccountService.getInstance().create(account);
+        StringBuilder errorString = new StringBuilder();
 
-        String errorString = null;
+        if(!StringUtils.checkPassword(password)) errorString.append("Wrong input of password. ");
+        if(!StringUtils.checkEmail(email)) errorString.append("Wrong input of email. ");
+        if(!StringUtils.checkNumber(number)) errorString.append("Wrong input of number. ");
+
+        if (errorString.isEmpty()){
+            Account account = AccountService.getInstance().create(new Account(email, password, number));
+            if (account.getId() == 0L){
+                errorString.append("Can't add user. ");
+            }
+        }
+
         request.setAttribute("errorString", errorString);
-
-        if (errorString != null) {
-            RequestDispatcher dispatcher = this.getServletContext()
-                    .getRequestDispatcher("/WEB-INF/views/createUserView.jsp");
-            dispatcher.forward(request, response);
+        if (errorString.isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/home");
         } else {
-            response.sendRedirect(request.getContextPath() + "/showSeat");
+            RequestDispatcher dispatcher = this.getServletContext()
+                    .getRequestDispatcher("/views/createUserView.jsp");
+            dispatcher.forward(request, response);
         }
     }
 }

@@ -1,7 +1,7 @@
 package filters;
 
 import entities.Account;
-import utils.MyUtils;
+import utils.AppUtils;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -24,7 +24,7 @@ public class AuthorizationFilter implements Filter {
 
         // Информация пользователя сохранена в Session
         // (После успешного входа в систему).
-        Account loginedUser = MyUtils.getLoginedUser(request.getSession());
+        Account loginedUser = AppUtils.getLoginedUser(request.getSession());
 
         if (servletPath.equals("/login")) {
             filterChain.doFilter(request, response);

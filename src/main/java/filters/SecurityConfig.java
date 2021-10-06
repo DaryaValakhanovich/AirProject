@@ -15,7 +15,6 @@ public class SecurityConfig {
     }
 
     private static void init() {
-
         // Конфигурация для роли "USER".
         List<String> urlPatterns1 = new ArrayList<String>();
 
