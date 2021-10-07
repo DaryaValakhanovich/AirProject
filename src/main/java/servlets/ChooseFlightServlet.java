@@ -112,7 +112,7 @@ public class ChooseFlightServlet extends HttpServlet {
             throws ServletException, IOException {
         StringBuilder errorString = new StringBuilder();
         Ticket ticket = new Ticket();
-        int flightId = 0;
+        int flightId;
         if(request.getParameter("flightId") == null){
             errorString.append("Choose flight. ");
         } else {
@@ -136,7 +136,7 @@ public class ChooseFlightServlet extends HttpServlet {
             request.setAttribute("ticketId", ticket.getId());
             response.sendRedirect(request.getContextPath() + "/showMyTickets");
         }else {
-            request.setAttribute("errorString", "Something go wrong");
+            request.setAttribute("errorString", errorString);
             RequestDispatcher dispatcher = this.getServletContext()
                     .getRequestDispatcher("/views/chooseFlightsView.jsp");
             dispatcher.forward(request, response);

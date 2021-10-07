@@ -6,7 +6,7 @@ public class StringUtils {
     }
 
     public static boolean checkEmail(String email){
-        return email.matches("\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*\\.\\w{2,4}");
+        return email.matches("\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*\\.\\w{2,4}");
     }
 
     public static boolean checkNumber(String number){
