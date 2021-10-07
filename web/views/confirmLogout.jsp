@@ -1,20 +1,17 @@
 <%--
   Created by IntelliJ IDEA.
   User: User
-  Date: 04.10.2021
-  Time: 13:44
+  Date: 06.10.2021
+  Time: 17:36
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Seats</title>
+    <title>Title</title>
 </head>
 <body>
-
 <jsp:include page="_header.jsp"></jsp:include>
 <c:if test="${loginedUser==null}">
     <jsp:include page="_menu.jsp"></jsp:include>
@@ -25,25 +22,15 @@
 <c:if test="${loginedUser.role=='ADMIN'}">
     <jsp:include page="_admin_menu.jsp"></jsp:include>
 </c:if>
-<h3>Seats</h3>
-
-<p style="color: red;">${errorString}</p>
-
-<table border="1" cellpadding="5" cellspacing="1" >
-    <tr>
-        <th>Number Of Seat</th>
-        <th>Ticket Id</th>
-    </tr>
-    <c:forEach items="${seats}" var="s" >
+<h3>Are you absolutely sure that you want to log out?</h3>
+<form method="POST" action="${pageContext.request.contextPath}/logout">
+    <table border="0">
         <tr>
-            <td>${s.seat}</td>
-            <td>${s.ticketId}</td>
+            <td><a href="${pageContext.request.contextPath}/home">Cancel</a></td>
+            <td></td>
+            <td><input type="submit" value="Log out!"></td>
         </tr>
-    </c:forEach>
-</table>
-<a href="${pageContext.request.contextPath}/showMyTickets">Back</a>
-
-<jsp:include page="_footer.jsp"></jsp:include>
-
+    </table>
+</form>
 </body>
 </html>

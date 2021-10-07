@@ -14,5 +14,12 @@
   |
   <a href="${pageContext.request.contextPath}/createUser">Create user</a>
   |
+  <a href="${pageContext.request.contextPath}/findFlight">Find flight</a>
+  |
   <a href="${pageContext.request.contextPath}/login">Login</a>
+  |
+  <a href="${pageContext.request.contextPath}/showMyTickets">Show my tickets</a>
+  |
+  <a href="${pageContext.request.contextPath}/logout">Log out</a>
+
 </div>

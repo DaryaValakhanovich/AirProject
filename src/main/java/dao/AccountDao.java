@@ -38,6 +38,7 @@ public class AccountDao extends BaseDao<Account> {
         account.setRole(Role.valueOf(resultSet.getString("role")));
         account.setEmail(resultSet.getString("email"));
         account.setNumber(resultSet.getString("number"));
+        account.setPassword(resultSet.getString("password"));
         return account;
     }
 

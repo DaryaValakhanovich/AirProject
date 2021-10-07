@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: User
-  Date: 05.10.2021
-  Time: 10:53
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -16,13 +9,56 @@
 <body>
 
 <jsp:include page="_header.jsp"></jsp:include>
-<jsp:include page="_menu.jsp"></jsp:include>
+<c:if test="${loginedUser==null}">
+    <jsp:include page="_menu.jsp"></jsp:include>
+</c:if>
+<c:if test="${loginedUser.role=='USER'}">
+    <jsp:include page="_user_menu.jsp"></jsp:include>
+</c:if>
+<c:if test="${loginedUser.role=='ADMIN'}">
+    <jsp:include page="_admin_menu.jsp"></jsp:include>
+</c:if>
+<script>
+    function Validate(){
+        if(!validateForm()){
+            alert("You must check one of the planes");
+            return false;
+        }
+        return true
+    }
+    function validateForm()
+    {
+        var c=document.getElementsByTagName('input');
+        for (var i = 0; i<c.length; i++){
+            if (c[i].type=='radio')
+            {
+                if (c[i].checked){return true}
+            }
+        }
+        return false;
+    }
+</script>
 
 <h3>Create Flight</h3>
 
 <p style="color: red;">${errorString}</p>
 
-<form method="POST" action="${pageContext.request.contextPath}/createFlight">
+<form method="POST" action="${pageContext.request.contextPath}/createFlight" onsubmit="return Validate()">
+    <style>
+        th {
+            font-weight: normal;
+            color: #039;
+            padding: 10px 15px;
+        }
+        td {
+            color: #669;
+            border-top: 1px solid #e8edff;
+            padding: 10px 15px;
+        }
+        tr:hover td {
+            background: #e8edff;
+        }
+    </style>
     <table border="0">
         <tr>
             <td>Departure date</td>
@@ -50,8 +86,8 @@
         </c:forEach>
         <tr>
             <td colspan="2">
-                <input type="submit" value="Submit" />
                 <a href="${pageContext.request.contextPath}/">Cancel</a>
+                <input type="submit" value="Submit" />
             </td>
         </tr>
     </table>

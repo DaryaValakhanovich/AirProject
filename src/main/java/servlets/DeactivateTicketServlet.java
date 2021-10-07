@@ -23,6 +23,6 @@ public class DeactivateTicketServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         TicketService.getInstance().deactivate(Integer.parseInt(request.getParameter("ticketId")));
-        response.sendRedirect(request.getContextPath() + "/home");
+        response.sendRedirect(request.getContextPath() + "/showMyTickets");
     }
 }

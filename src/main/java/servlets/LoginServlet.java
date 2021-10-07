@@ -44,16 +44,15 @@ public class LoginServlet extends HttpServlet {
         boolean hasError = false;
         String errorString = null;
 
-        System.out.println(email);
-
         if (email == null || password == null || email.length() == 0 || password.length() == 0) {
             hasError = true;
-            errorString = "Required username and password!";
+            errorString = "Required email and password!";
         } else {
             user = AccountService.getInstance().findByEmail(email);
-            if (user.getId() == 0L) {
+            if (user == null
+                    || !(user.getPassword().equals(password))) {
                 hasError = true;
-                errorString = "User Name or password invalid";
+                errorString = "Email or password invalid";
             }
         }
 

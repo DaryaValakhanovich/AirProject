@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,9 +10,19 @@
 <body>
 
 <jsp:include page="_header.jsp"></jsp:include>
-<jsp:include page="_menu.jsp"></jsp:include>
+<c:if test="${loginedUser==null}">
+    <jsp:include page="_menu.jsp"></jsp:include>
+</c:if>
+<c:if test="${loginedUser.role=='USER'}">
+    <jsp:include page="_user_menu.jsp"></jsp:include>
+</c:if>
+<c:if test="${loginedUser.role=='ADMIN'}">
+    <jsp:include page="_admin_menu.jsp"></jsp:include>
+</c:if>
+
 
 <h3>Home Page</h3>
+
 
 This is demo Simple web application using jsp,servlet &amp; Jdbc. <br><br>
 <b>It includes the following functions:</b>

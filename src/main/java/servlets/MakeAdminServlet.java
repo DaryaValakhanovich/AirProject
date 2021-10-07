@@ -42,7 +42,7 @@ public class MakeAdminServlet extends HttpServlet {
             errorString = "Required email!";
         } else {
             Account account = AccountService.getInstance().findByEmail(email);
-            if (account.getId() == 0L) {
+            if (account == null) {
                 hasError = true;
                 errorString = "There is no such user!";
             } else {
@@ -52,7 +52,7 @@ public class MakeAdminServlet extends HttpServlet {
         if (hasError) {
             request.setAttribute("errorString", errorString);
             RequestDispatcher dispatcher
-                    = this.getServletContext().getRequestDispatcher("/WEB-INF/views/makeAdmin.jsp");
+                    = this.getServletContext().getRequestDispatcher("/views/makeAdmin.jsp");
             dispatcher.forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/home");

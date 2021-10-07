@@ -7,34 +7,60 @@ import services.FlightService;
 import services.TicketService;
 import utils.AppUtils;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
 @WebServlet(urlPatterns = "/chooseDifficultWay")
 public class ChooseDifficultWayServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
+        StringBuilder errorString = new StringBuilder();
         String[] listOfFlights = request.getParameterValues("listOfFlightsIds");
         Flight flight;
         Ticket ticket = new Ticket();
         ticket.setAccountId(AccountService.getInstance().findByEmail
                 (AppUtils.getLoginedUser(request.getSession()).getEmail()).getId());
+
         ticket.setNumberOfSeats(Integer.parseInt(request.getParameter("numberOfSeats")));
 
-        for (String flightString:listOfFlights) {
-            flight = FlightService.getInstance().findById(Integer.parseInt(flightString));
-            ticket.setFlight(flight);
-            TicketService.getInstance().create(ticket);
-        }
-        String errorString = null;
-        request.setAttribute("errorString", errorString);
-        if (errorString != null) {
-            response.sendRedirect(request.getContextPath() + "/chooseDifficultWay");
+
+        if(listOfFlights != null) {
+            for (String flightString : listOfFlights) {
+                flight = FlightService.getInstance().findById(Integer.parseInt(flightString));
+                ticket.setFlight(flight);
+                TicketService.getInstance().create(ticket);
+            }
+            if (ticket.getId()!=0L){
+                response.sendRedirect(request.getContextPath() + "/showMyTickets");
+            } else {
+                errorString.append("Can't add ticket. ");
+                request.setAttribute("errorString", errorString);
+
+
+                request.setAttribute("listsOfFlights", request.getParameter("listsOfFlights"));
+                request.setAttribute("numberOfSeats", request.getParameter("numberOfSeats"));
+
+                RequestDispatcher dispatcher = this.getServletContext()
+                        .getRequestDispatcher("/views/chooseDifficultWayView.jsp");
+                dispatcher.forward(request, response);
+            }
         } else {
-            response.sendRedirect(request.getContextPath() + "/showMyTickets");
+            errorString.append("Choose flights. ");
+            request.setAttribute("errorString", errorString);
+
+
+            request.setAttribute("listsOfFlights", request.getParameter("listsOfFlights"));
+            request.setAttribute("numberOfSeats", request.getParameter("numberOfSeats"));
+
+            RequestDispatcher dispatcher = this.getServletContext()
+                    .getRequestDispatcher("/views/chooseDifficultWayView.jsp");
+            dispatcher.forward(request, response);
         }
     }
 }

@@ -27,7 +27,6 @@ public class ShowSeatServlet extends HttpServlet {
             throws ServletException, IOException {
         List<Seat> seats = SeatService.getInstance().findByTicketId(Integer.parseInt(request.getParameter("ticketId")));
         request.setAttribute("seats", seats);
-        seats.forEach(System.out::println);
         RequestDispatcher dispatcher = this.getServletContext()
                 .getRequestDispatcher("/views/showSeatsView.jsp");
         dispatcher.forward(request, response);

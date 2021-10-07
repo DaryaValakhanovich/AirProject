@@ -20,6 +20,11 @@ public class SecurityConfig {
 
         urlPatterns1.add("/showMyTickets");
         urlPatterns1.add("/findFlight");
+        urlPatterns1.add("/chooseDifficultWay");
+        urlPatterns1.add("/chooseFlight");
+        urlPatterns1.add("/deactivate");
+        urlPatterns1.add("/showPlane");
+        urlPatterns1.add("/showSeats");
 
         mapConfig.put(Role.USER, urlPatterns1);
 

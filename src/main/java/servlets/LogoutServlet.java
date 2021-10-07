@@ -1,5 +1,6 @@
 package servlets;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,8 +21,14 @@ public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getSession().invalidate();
-        response.sendRedirect(request.getContextPath() + "/home");
+        RequestDispatcher dispatcher
+                = this.getServletContext().getRequestDispatcher("/views/confirmLogout.jsp");
+        dispatcher.forward(request, response);
+    }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.getSession().invalidate();
+        resp.sendRedirect(req.getContextPath() + "/home");
     }
 }

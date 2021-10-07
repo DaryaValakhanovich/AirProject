@@ -78,12 +78,12 @@ public class ChooseFlightServlet extends HttpServlet {
                             .getRequestDispatcher("/views/findFlightView.jsp");
                     dispatcher.forward(request, response);
                 }
-                request.setAttribute("listsOfFlights", newFlights);
                 for (List<Flight> listFlight : newFlights) {
                     for (Flight flight : listFlight) {
                         flight.setPrice(FlightService.getInstance().getPrice(flight, numberOfSeats));
                     }
                 }
+                request.setAttribute("listsOfFlights", newFlights);
                 request.setAttribute("numberOfSeats", numberOfSeats);
                 RequestDispatcher dispatcher = this.getServletContext()
                         .getRequestDispatcher("/views/chooseDifficultWayView.jsp");
@@ -110,22 +110,36 @@ public class ChooseFlightServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        StringBuilder errorString = new StringBuilder();
         Ticket ticket = new Ticket();
-        int flightId = Integer.parseInt(request.getParameter("flightId"));
-        ticket.setFlight(FlightService.getInstance().findById(flightId));
-        ticket.setAccountId(AccountService.getInstance().findByEmail
-                (AppUtils.getLoginedUser(request.getSession()).getEmail()).getId());
-        ticket.setNumberOfSeats(Integer.parseInt(request.getParameter("numberOfSeats")));
-        Ticket ticket1 = TicketService.getInstance().create(ticket);
+        int flightId = 0;
+        if(request.getParameter("flightId") == null){
+            errorString.append("Choose flight. ");
+        } else {
+            flightId = Integer.parseInt(request.getParameter("flightId"));
+            Flight flight = FlightService.getInstance().findById(flightId);
+            if(flight == null){
+                errorString.append("Can't find flight. ");
+            } else {
+                ticket.setFlight(flight);
+                ticket.setAccountId(AccountService.getInstance().findByEmail
+                        (AppUtils.getLoginedUser(request.getSession()).getEmail()).getId());
+                ticket.setNumberOfSeats(Integer.parseInt(request.getParameter("numberOfSeats")));
+                ticket = TicketService.getInstance().create(ticket);
+                if(ticket.getId()==0L){
+                    errorString.append("Can't add ticket. ");
+                }
+            }
+        }
 
-        if(ticket1.getId()==0L){
+        if(errorString.isEmpty()) {
+            request.setAttribute("ticketId", ticket.getId());
+            response.sendRedirect(request.getContextPath() + "/showMyTickets");
+        }else {
             request.setAttribute("errorString", "Something go wrong");
             RequestDispatcher dispatcher = this.getServletContext()
                     .getRequestDispatcher("/views/chooseFlightsView.jsp");
             dispatcher.forward(request, response);
         }
-
-        request.setAttribute("ticketId", ticket.getId());
-        response.sendRedirect(request.getContextPath() + "/showMyTickets");
     }
 }

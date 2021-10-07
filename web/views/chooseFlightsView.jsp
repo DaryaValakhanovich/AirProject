@@ -11,15 +11,58 @@
 <body>
 
 <jsp:include page="_header.jsp"></jsp:include>
-<jsp:include page="_menu.jsp"></jsp:include>
+<c:if test="${loginedUser==null}">
+    <jsp:include page="_menu.jsp"></jsp:include>
+</c:if>
+<c:if test="${loginedUser.role=='USER'}">
+    <jsp:include page="_user_menu.jsp"></jsp:include>
+</c:if>
+<c:if test="${loginedUser.role=='ADMIN'}">
+    <jsp:include page="_admin_menu.jsp"></jsp:include>
+</c:if>
+<script>
+function Validate(){
+if(!validateForm()){
+alert("You must check one of the flights");
+return false;
+}
+return true
+}
+function validateForm()
+{
+var c=document.getElementsByTagName('input');
+for (var i = 0; i<c.length; i++){
+if (c[i].type=='radio')
+{
+if (c[i].checked){return true}
+}
+}
+return false;
+}
+</script>
 
 <h3>Suitable flights</h3>
 
 <p style="color: red;">${errorString}</p>
-<form method="POST" action="${pageContext.request.contextPath}/chooseFlight">
-<table border="1" cellpadding="5" cellspacing="1" >
+<form method="POST" action="${pageContext.request.contextPath}/chooseFlight" onsubmit="return Validate()">
+    <style>
+        th {
+            font-weight: normal;
+            color: #039;
+            padding: 10px 15px;
+        }
+        td {
+            color: #669;
+            border-top: 1px solid #e8edff;
+            padding: 10px 15px;
+        }
+        tr:hover td {
+            background: #e8edff;
+        }
+    </style>
+<table>
     <tr>
-        <th>Choose</th>
+        <th></th>
         <th>Id</th>
         <th>Departure</th>
         <th>Arrival</th>
@@ -41,10 +84,9 @@
         </tr>
     </c:forEach>
 </table>
-    <input type="number" name="numberOfSeats" value= ${numberOfSeats}>
-
+    <input  style="display: none" type="number" name="numberOfSeats" value= ${numberOfSeats}>
+    <a href="${pageContext.request.contextPath}/">Cancel           </a>
     <p><input type="submit" value="Отправить">
-        <a href="${pageContext.request.contextPath}/">Cancel</a>
 <jsp:include page="_footer.jsp"></jsp:include>
 
 </body>

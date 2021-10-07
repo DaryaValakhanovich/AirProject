@@ -36,29 +36,63 @@ public class CreateFlightServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LocalDateTime departure = LocalDateTime.parse(request.getParameter("departure"));
-        LocalDateTime arrival = LocalDateTime.parse(request.getParameter("arrival"));
+        StringBuilder errorString = new StringBuilder();
+
+        String date = request.getParameter("departure");
+        LocalDateTime departure = null;
+        if(date.isEmpty()){
+            errorString.append("Enter departure date. ");
+        }else {
+            departure = LocalDateTime.parse(request.getParameter("departure"));
+        }
+        date = request.getParameter("arrival");
+        LocalDateTime arrival = null;
+        if(date.isEmpty()){
+            errorString.append("Enter arrival date. ");
+        }else {
+            arrival = LocalDateTime.parse(request.getParameter("arrival"));
+        }
+
+        if (arrival!=null && departure != null && (arrival.isBefore(departure) || arrival.isEqual(departure))){
+            errorString.append("Enter correct dates. ");
+        }
         String startAirport = request.getParameter("startAirport");
         String finalAirport = request.getParameter("finalAirport");
-        Plane plane = PlaneService.getInstance().findById(Integer.parseInt(request.getParameter("planeId")));
-
-        Flight flight = new Flight();
-        flight.setDeparture(departure);
-        flight.setArrival(arrival);
-        flight.setStartAirport(startAirport);
-        flight.setFinalAirport(finalAirport);
-        flight.setPlane(plane);
-        FlightService.getInstance().create(flight);
-
-        String errorString = null;
+        if(startAirport.isEmpty() || finalAirport.isEmpty()){
+            errorString.append("Enter airports. ");
+        }
+        Plane plane = null;
+        if(request.getParameter("planeId")==null){
+            errorString.append("Choose plane. ");
+        } else {
+            plane = PlaneService.getInstance().findById(Integer.parseInt(request.getParameter("planeId")));
+            if(plane.getId()==0L){
+                errorString.append("Wrong plane. ");
+            }
+        }
         request.setAttribute("errorString", errorString);
-
-        if (errorString != null) {
+        if (!errorString.isEmpty()) {
+            request.setAttribute("planes", PlaneService.getInstance().findAll());
             RequestDispatcher dispatcher = this.getServletContext()
-                    .getRequestDispatcher("/WEB-INF/views/createFlightView.jsp");
+                    .getRequestDispatcher("/views/createFlightView.jsp");
             dispatcher.forward(request, response);
         } else {
-            response.sendRedirect(request.getContextPath() + "/home");
+            Flight flight = new Flight();
+            flight.setDeparture(departure);
+            flight.setArrival(arrival);
+            flight.setStartAirport(startAirport);
+            flight.setFinalAirport(finalAirport);
+            flight.setPlane(plane);
+            flight = FlightService.getInstance().create(flight);
+            if(flight.getId()==0L){
+                errorString.append("Can't add flight. ");
+                request.setAttribute("planes", PlaneService.getInstance().findAll());
+                RequestDispatcher dispatcher = this.getServletContext()
+                        .getRequestDispatcher("/views/createFlightView.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/home");
+            }
         }
     }
 }

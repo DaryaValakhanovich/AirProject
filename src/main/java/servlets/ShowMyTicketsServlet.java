@@ -1,6 +1,7 @@
 package servlets;
 
 import entities.Ticket;
+import services.FlightService;
 import services.TicketService;
 import utils.AppUtils;
 
@@ -29,6 +30,10 @@ public class ShowMyTicketsServlet extends HttpServlet {
             throws ServletException, IOException {
         List<Ticket> tickets = TicketService.getInstance().findByAccountEmail(AppUtils.getLoginedUser(request.getSession()).getEmail());
         request.setAttribute("tickets", tickets);
+
+        for (Ticket ticket: tickets) {
+            ticket.getFlight().setPrice(FlightService.getInstance().getPrice(ticket.getFlight(),ticket.getNumberOfSeats()));
+        }
 
         RequestDispatcher dispatcher = this.getServletContext()
                 .getRequestDispatcher("/views/showMyTickets.jsp");

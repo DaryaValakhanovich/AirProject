@@ -6,13 +6,22 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Title</title>
 </head>
 <body>
 <jsp:include page="_header.jsp"></jsp:include>
-<jsp:include page="_menu.jsp"></jsp:include>
+<c:if test="${loginedUser==null}">
+    <jsp:include page="_menu.jsp"></jsp:include>
+</c:if>
+<c:if test="${loginedUser.role=='USER'}">
+    <jsp:include page="_user_menu.jsp"></jsp:include>
+</c:if>
+<c:if test="${loginedUser.role=='ADMIN'}">
+    <jsp:include page="_admin_menu.jsp"></jsp:include>
+</c:if>
 
 <h3>Plane information</h3>
 
@@ -37,7 +46,7 @@
         </tr>
 
 </table>
-<a href="${pageContext.request.contextPath}/">Cancel</a>
+<a href="${pageContext.request.contextPath}/showMyTickets">Back</a>
 <jsp:include page="_footer.jsp"></jsp:include>
 
 </body>
