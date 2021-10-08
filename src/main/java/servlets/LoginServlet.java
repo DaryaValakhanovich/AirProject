@@ -26,7 +26,6 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         RequestDispatcher dispatcher //
                 = this.getServletContext().getRequestDispatcher("/views/loginView.jsp");
         dispatcher.forward(request, response);
@@ -60,25 +59,20 @@ public class LoginServlet extends HttpServlet {
             user = new Account();
             user.setEmail(email);
             user.setPassword(password);
-
             request.setAttribute("errorString", errorString);
             request.setAttribute("user", user);
-
             RequestDispatcher dispatcher //
                     = this.getServletContext().getRequestDispatcher("/views/loginView.jsp");
             dispatcher.forward(request, response);
         } else {
             HttpSession session = request.getSession();
             AppUtils.storeLoginedUser(session, user);
-
             if (remember) {
                 AppUtils.storeUserCookie(response, user);
             } else {
                 AppUtils.deleteUserCookie(response);
             }
-
             response.sendRedirect(request.getContextPath() + "/home");
         }
     }
-
 }

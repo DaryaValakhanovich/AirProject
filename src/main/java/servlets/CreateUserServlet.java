@@ -47,18 +47,17 @@ public class CreateUserServlet extends HttpServlet {
 
         if (errorString.isEmpty()){
             Account account = AccountService.getInstance().create(new Account(email, password, number));
-            if (account.getId() == 0L){
+            if (account.getId() != 0L){
+                RequestDispatcher dispatcher = this.getServletContext()
+                        .getRequestDispatcher("/views/homeView.jsp");
+                dispatcher.forward(request, response);
+            } else {
                 errorString.append("Can't add user. ");
             }
         }
-
         request.setAttribute("errorString", errorString);
-        if (errorString.isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/home");
-        } else {
-            RequestDispatcher dispatcher = this.getServletContext()
-                    .getRequestDispatcher("/views/createUserView.jsp");
-            dispatcher.forward(request, response);
-        }
+        RequestDispatcher dispatcher = this.getServletContext()
+                .getRequestDispatcher("/views/createUserView.jsp");
+        dispatcher.forward(request, response);
     }
 }

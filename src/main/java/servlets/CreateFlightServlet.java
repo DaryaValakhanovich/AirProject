@@ -45,6 +45,7 @@ public class CreateFlightServlet extends HttpServlet {
         }else {
             departure = LocalDateTime.parse(request.getParameter("departure"));
         }
+
         date = request.getParameter("arrival");
         LocalDateTime arrival = null;
         if(date.isEmpty()){
@@ -56,11 +57,13 @@ public class CreateFlightServlet extends HttpServlet {
         if (arrival!=null && departure != null && (arrival.isBefore(departure) || arrival.isEqual(departure))){
             errorString.append("Enter correct dates. ");
         }
+
         String startAirport = request.getParameter("startAirport");
         String finalAirport = request.getParameter("finalAirport");
         if(startAirport.isEmpty() || finalAirport.isEmpty()){
             errorString.append("Enter airports. ");
         }
+
         Plane plane = null;
         if(request.getParameter("planeId")==null){
             errorString.append("Choose plane. ");
@@ -70,13 +73,8 @@ public class CreateFlightServlet extends HttpServlet {
                 errorString.append("Wrong plane. ");
             }
         }
-        request.setAttribute("errorString", errorString);
-        if (!errorString.isEmpty()) {
-            request.setAttribute("planes", PlaneService.getInstance().findAll());
-            RequestDispatcher dispatcher = this.getServletContext()
-                    .getRequestDispatcher("/views/createFlightView.jsp");
-            dispatcher.forward(request, response);
-        } else {
+
+        if (errorString.isEmpty()) {
             Flight flight = new Flight();
             flight.setDeparture(departure);
             flight.setArrival(arrival);
@@ -84,15 +82,19 @@ public class CreateFlightServlet extends HttpServlet {
             flight.setFinalAirport(finalAirport);
             flight.setPlane(plane);
             flight = FlightService.getInstance().create(flight);
-            if(flight.getId()==0L){
-                errorString.append("Can't add flight. ");
-                request.setAttribute("planes", PlaneService.getInstance().findAll());
+            if(flight.getId()!=0L){
                 RequestDispatcher dispatcher = this.getServletContext()
-                        .getRequestDispatcher("/views/createFlightView.jsp");
+                        .getRequestDispatcher("/views/homeView.jsp");
                 dispatcher.forward(request, response);
             } else {
-                response.sendRedirect(request.getContextPath() + "/home");
+                errorString.append("Can't add flight. ");
             }
         }
+        request.setAttribute("errorString", errorString);
+        request.setAttribute("planes", PlaneService.getInstance().findAll());
+        RequestDispatcher dispatcher = this.getServletContext()
+                .getRequestDispatcher("/views/createFlightView.jsp");
+        dispatcher.forward(request, response);
+
     }
 }

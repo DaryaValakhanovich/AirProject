@@ -20,41 +20,22 @@ public class ChooseDifficultWayServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        StringBuilder errorString = new StringBuilder();
         String[] listOfFlights = request.getParameterValues("listOfFlightsIds");
         Flight flight;
         Ticket ticket = new Ticket();
         ticket.setAccountId(AccountService.getInstance().findByEmail
                 (AppUtils.getLoginedUser(request.getSession()).getEmail()).getId());
-
         ticket.setNumberOfSeats(Integer.parseInt(request.getParameter("numberOfSeats")));
 
-
-        if(listOfFlights != null) {
-            for (String flightString : listOfFlights) {
-                flight = FlightService.getInstance().findById(Integer.parseInt(flightString));
-                ticket.setFlight(flight);
-                TicketService.getInstance().create(ticket);
-            }
-            if (ticket.getId()!=0L){
-                response.sendRedirect(request.getContextPath() + "/showMyTickets");
-            } else {
-                errorString.append("Can't add ticket. ");
-                request.setAttribute("errorString", errorString);
-
-
-                request.setAttribute("listsOfFlights", request.getParameter("listsOfFlights"));
-                request.setAttribute("numberOfSeats", request.getParameter("numberOfSeats"));
-
-                RequestDispatcher dispatcher = this.getServletContext()
-                        .getRequestDispatcher("/views/chooseDifficultWayView.jsp");
-                dispatcher.forward(request, response);
-            }
+        for (String flightString : listOfFlights) {
+            flight = FlightService.getInstance().findById(Integer.parseInt(flightString));
+            ticket.setFlight(flight);
+            TicketService.getInstance().create(ticket);
+        }
+        if (ticket.getId() != 0L) {
+            response.sendRedirect(request.getContextPath() + "/showMyTickets");
         } else {
-            errorString.append("Choose flights. ");
-            request.setAttribute("errorString", errorString);
-
-
+            request.setAttribute("errorString", "Can't add ticket. ");
             request.setAttribute("listsOfFlights", request.getParameter("listsOfFlights"));
             request.setAttribute("numberOfSeats", request.getParameter("numberOfSeats"));
 
@@ -62,5 +43,6 @@ public class ChooseDifficultWayServlet extends HttpServlet {
                     .getRequestDispatcher("/views/chooseDifficultWayView.jsp");
             dispatcher.forward(request, response);
         }
+
     }
 }
