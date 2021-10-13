@@ -122,13 +122,10 @@ public class ChooseFlightServlet extends HttpServlet {
                 errorString.append("Can't find flight. ");
             } else {
                 ticket.setFlight(flight);
-                ticket.setAccountId(AccountService.getInstance().findByEmail
-                        (AppUtils.getLoginedUser(request.getSession()).getEmail()).getId());
+                ticket.setAccount(AccountService.getInstance().findByEmail
+                        (AppUtils.getLoginedUser(request.getSession()).getEmail()));
                 ticket.setNumberOfSeats(Integer.parseInt(request.getParameter("numberOfSeats")));
-                ticket = TicketService.getInstance().create(ticket);
-                if(ticket.getId()==0L){
-                    errorString.append("Can't add ticket. ");
-                }
+                TicketService.getInstance().create(ticket);
             }
         }
 

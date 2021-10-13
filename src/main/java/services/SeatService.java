@@ -13,11 +13,22 @@ public class SeatService {
         private static final SeatService  INSTANCE = new SeatService ();
     }
 
+    SeatDao seatDao = new SeatDao();
+
     public static SeatService  getInstance() {
         return SeatService.SeatServiceHolder.INSTANCE;
     }
 
-    public List<Seat> findByTicketId(long ticketId){
-        return SeatDao.getInstance().findByTicketId(ticketId);
+    public void save(Integer ticketId, int numberOfFirstSeat, int amountOfSeats) {
+        Seat seat = new Seat(TicketService.getInstance().findByd(ticketId),numberOfFirstSeat);
+        for (int i = 0; i < amountOfSeats; i++) {
+            seatDao.save(seat);
+            numberOfFirstSeat--;
+            seat.setNumberOfSeat(numberOfFirstSeat);
+        }
+    }
+
+    public List<Seat> findByTicketId(Integer ticketId){
+        return seatDao.findByTicketId(ticketId);
     }
 }

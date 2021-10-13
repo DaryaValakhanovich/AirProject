@@ -16,27 +16,29 @@ public class FlightService {
         private static final FlightService INSTANCE = new FlightService();
     }
 
+    FlightDao flightDao = new FlightDao();
+
     public static FlightService getInstance() {
         return FlightService.FlightServiceHolder.INSTANCE;
     }
 
-    public Flight findById(long id){
-        return FlightDao.getInstance().findById(id).orElse(null);
+    public Flight findById(Integer id){
+        return flightDao.findById(id);
     }
 
-    public Flight create(Flight flight){
-        return FlightDao.getInstance().create(flight);
+    public void create(Flight flight){
+        flight.setNumberOfFreeSeats(flight.getPlane().getNumberOfSeats());
+        flightDao.save(flight);
     }
 
     public List<Flight> findRightFlights(LocalDate departure, int numberOfSeats,
                                          String startAirport, String finalAirport){
-        FlightDao.getInstance().findRightFlights(departure,numberOfSeats,startAirport,finalAirport).forEach(System.out::println);
-        return FlightDao.getInstance().findRightFlights(departure,numberOfSeats,startAirport,finalAirport);
+        return flightDao.findRightFlights(departure,numberOfSeats,startAirport,finalAirport);
     }
 
     public List<Flight> findRightDifficultWay(LocalDate departure, int numberOfSeats,
                                          String startAirport, String finalAirport){
-        List<Flight> flights = FlightDao.getInstance().findFlightsForDifficultWay(departure,numberOfSeats);
+        List<Flight> flights = flightDao.findFlightsForDifficultWay(departure,numberOfSeats);
         flights = findDifficultWay2(startAirport, finalAirport, flights, new ArrayList<>());
         return flights;
     }

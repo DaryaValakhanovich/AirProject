@@ -81,14 +81,12 @@ public class CreateFlightServlet extends HttpServlet {
             flight.setStartAirport(startAirport);
             flight.setFinalAirport(finalAirport);
             flight.setPlane(plane);
-            flight = FlightService.getInstance().create(flight);
-            if(flight.getId()!=0L){
+            FlightService.getInstance().create(flight);
+
                 RequestDispatcher dispatcher = this.getServletContext()
                         .getRequestDispatcher("/views/homeView.jsp");
                 dispatcher.forward(request, response);
-            } else {
-                errorString.append("Can't add flight. ");
-            }
+
         }
         request.setAttribute("errorString", errorString);
         request.setAttribute("planes", PlaneService.getInstance().findAll());

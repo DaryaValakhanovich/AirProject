@@ -23,8 +23,8 @@ public class ChooseDifficultWayServlet extends HttpServlet {
         String[] listOfFlights = request.getParameterValues("listOfFlightsIds");
         Flight flight;
         Ticket ticket = new Ticket();
-        ticket.setAccountId(AccountService.getInstance().findByEmail
-                (AppUtils.getLoginedUser(request.getSession()).getEmail()).getId());
+        ticket.setAccount(AccountService.getInstance().findByEmail
+                (AppUtils.getLoginedUser(request.getSession()).getEmail()));
         ticket.setNumberOfSeats(Integer.parseInt(request.getParameter("numberOfSeats")));
 
         for (String flightString : listOfFlights) {

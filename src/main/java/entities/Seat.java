@@ -1,34 +1,57 @@
 package entities;
 
-public class Seat {
-    private long ticketId;
-    private int seat;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "seats")
+public class Seat {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @ManyToOne
+    @JoinColumn(name="ticketid")
+    private Ticket ticket;
+    @Column(name = "numberofseat")
+    private int numberOfSeat;
 
     public Seat() {
     }
 
-    public long getTicketId() {
-        return ticketId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTicketId(long ticketId) {
-        this.ticketId = ticketId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public int getSeat() {
-        return seat;
+    public Ticket getTicket() {
+        return ticket;
     }
 
-    public void setSeat(int seat) {
-        this.seat = seat;
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
+    public Seat(Ticket ticket, int seat) {
+        this.ticket = ticket;
+        this.numberOfSeat = seat;
+    }
+
+    public int getNumberOfSeat() {
+        return numberOfSeat;
+    }
+
+    public void setNumberOfSeat(int seat) {
+        this.numberOfSeat = seat;
     }
 
     @Override
     public String toString() {
         return "Seat{" +
-                "ticketId=" + ticketId +
-                ", seat=" + seat +
+                "ticket=" + ticket +
+                ", seat=" + numberOfSeat +
                 '}';
     }
 }

@@ -37,23 +37,26 @@ public class CreateUserServlet extends HttpServlet {
             throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String passwordRepeat = request.getParameter("password_repeat");
         String number = request.getParameter("number");
 
         StringBuilder errorString = new StringBuilder();
 
         if(!StringUtils.checkPassword(password)) errorString.append("Wrong input of password. ");
+        if(!password.equals(passwordRepeat)) errorString.append("Different passwords. ");
         if(!StringUtils.checkEmail(email)) errorString.append("Wrong input of email. ");
         if(!StringUtils.checkNumber(number)) errorString.append("Wrong input of number. ");
 
         if (errorString.isEmpty()){
-            Account account = AccountService.getInstance().create(new Account(email, password, number));
-            if (account.getId() != 0L){
-                RequestDispatcher dispatcher = this.getServletContext()
-                        .getRequestDispatcher("/views/homeView.jsp");
-                dispatcher.forward(request, response);
-            } else {
+         //   Account account =
+                    AccountService.getInstance().saveAccount(new Account(email, password, number));
+          //  if (account.getId() != 0L){
+              //  RequestDispatcher dispatcher = this.getServletContext()
+              //          .getRequestDispatcher("/views/homeView.jsp");
+              //  dispatcher.forward(request, response);
+           // } else {
                 errorString.append("Can't add user. ");
-            }
+           // }
         }
         request.setAttribute("errorString", errorString);
         RequestDispatcher dispatcher = this.getServletContext()

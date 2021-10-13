@@ -24,7 +24,7 @@
     <jsp:include page="_admin_menu.jsp"></jsp:include>
 </c:if>
 <script>
-    function Validate(){
+    function validate(){
         if(!validateForm()){
             alert("You must check at least one of the flights");
             return false;
@@ -47,7 +47,7 @@
 <h3>There are no suitable flights for you!!!</h3>
 <h3>How about a transfer option?</h3>
 <p style="color: red;">${errorString}</p>
-<form method="POST" action="${pageContext.request.contextPath}/chooseDifficultWay" onsubmit="return Validate()">
+<form method="POST" action="${pageContext.request.contextPath}/chooseDifficultWay" onsubmit="return validate()">
     <style>
         th {
             font-weight: normal;
@@ -75,7 +75,6 @@
             <th>Price</th>
         </tr>
         <c:forEach items="${listsOfFlights}" var="listOfFlights">
-
                       <c:forEach items="${listOfFlights}" var="flight">
                           <tr>
                            <td><input type="checkbox" name="listOfFlightsIds" value=${flight.id}></td>

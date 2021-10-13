@@ -20,18 +20,28 @@ public class TicketService {
         return TicketService.TicketServiceHolder.INSTANCE;
     }
 
-    public Ticket create(Ticket object) {
-        Ticket ticket = TicketDao.getInstance().create(object);
-        SeatDao.getInstance().create(ticket.getId(), ticket.getFlight().getNumberOfFreeSeats() ,ticket.getNumberOfSeats());
-        FlightDao.getInstance().buyTicket(ticket.getId(), ticket.getNumberOfSeats());
-        return ticket;
+    TicketDao ticketDao = new TicketDao();
+    SeatDao seatDao = new SeatDao();
+    FlightDao flightDao = new FlightDao();
+
+    public void create(Ticket object) {
+        ticketDao.save(object);
+        List<Ticket> tickets = ticketDao.findByAccountId(object.getAccount().getId());
+        Ticket ticket = tickets.get(tickets.size()-1);
+        SeatService.getInstance().save(ticket.getId(), object.getFlight().getNumberOfFreeSeats() ,object.getNumberOfSeats());
+        flightDao.buyTicket(ticket.getFlight().getId(), object.getNumberOfSeats());
     }
 
-   public void deactivate(long id){
-        TicketDao.getInstance().findById(id).ifPresent(value -> TicketDao.getInstance().deactivate(value));
+   public void deactivate(Integer id){
+        ticketDao.deactivate(ticketDao.findById(id));
    }
 
+    public Ticket findByd(Integer id){
+        return ticketDao.findById(id);}
+
    public List<Ticket> findByAccountEmail(String email){
-        return TicketDao.getInstance().findByAccountId(AccountDao.getInstance().findByEmail(email).getId());
+       return ticketDao.findByAccountId(new AccountDao().findByEmail(email).getId());
+      //  return null;
+      //  return TicketDao.getInstance().findByAccountId(AccountDao.getInstance().findByEmail(email).getId());
    }
 }

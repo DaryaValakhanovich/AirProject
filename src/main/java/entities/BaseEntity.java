@@ -1,6 +1,9 @@
 package entities;
 
 public class BaseEntity {
+ //   @Id
+ //   @GeneratedValue(strategy = GenerationType.IDENTITY)
+ //   @Column(name = "id", unique = true, nullable = false)
     private long id;
 
     public BaseEntity() {

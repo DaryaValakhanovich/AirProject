@@ -1,10 +1,30 @@
 package entities;
 
-public class Account extends BaseEntity {
+import javax.persistence.*;
+
+@Entity
+@Table(name = "accounts", uniqueConstraints = {
+  @UniqueConstraint(columnNames = "id"),
+        @UniqueConstraint(columnNames = "email")})
+public class Account{
+
+    @Column(name = "email", unique = true, nullable = false, length = 250)
     private String email;
+
+    @Column(name = "password", unique = false, nullable = false, length = 250)
     private String password;
+
+    //@Column(name = "role", unique = false, nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", columnDefinition="enum('USER','ADMIN')", nullable = false, length = 50)
     private Role role;
+
+    @Column(name = "number", unique = true, nullable = false, length = 250)
     private String number;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     public Account() {
     }
@@ -56,5 +76,13 @@ public class Account extends BaseEntity {
                 ", email='" + email + '\'' +
                 ", number='" + number + '\'' +
                 '}';
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }

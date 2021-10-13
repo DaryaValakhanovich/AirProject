@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serial;
 
-@WebServlet(urlPatterns = { "/createPlane" })
-public class CreatePlaneServlet extends HttpServlet{
+@WebServlet(urlPatterns = {"/createPlane"})
+public class CreatePlaneServlet extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -35,49 +35,49 @@ public class CreatePlaneServlet extends HttpServlet{
         StringBuilder errorString = new StringBuilder();
 
         int numberOfSeats = 0;
-        if(request.getParameter("numberOfSeats").isEmpty()  || Integer.parseInt(request.getParameter("numberOfSeats"))<=0){
+        if (request.getParameter("numberOfSeats").isEmpty() || Integer.parseInt(request.getParameter("numberOfSeats")) <= 0) {
             errorString.append("Enter correct number of seats. ");
         } else {
             numberOfSeats = Integer.parseInt(request.getParameter("numberOfSeats"));
         }
 
         double weight = 0;
-        if(request.getParameter("weight").isEmpty()  || Double.parseDouble(request.getParameter("weight"))<=0){
+        if (request.getParameter("weight").isEmpty() || Double.parseDouble(request.getParameter("weight")) <= 0) {
             errorString.append("Enter correct weight. ");
         } else {
             weight = Double.parseDouble(request.getParameter("weight"));
         }
 
         double cruisingSpeed = 0;
-        if(request.getParameter("cruisingSpeed").isEmpty()  || Double.parseDouble(request.getParameter("cruisingSpeed"))<=0){
+        if (request.getParameter("cruisingSpeed").isEmpty() || Double.parseDouble(request.getParameter("cruisingSpeed")) <= 0) {
             errorString.append("Enter correct cruising speed. ");
         } else {
             cruisingSpeed = Double.parseDouble(request.getParameter("cruisingSpeed"));
         }
 
         String model = null;
-        if(request.getParameter("model").isEmpty()){
+        if (request.getParameter("model").isEmpty()) {
             errorString.append("Enter model. ");
         } else {
             model = request.getParameter("model");
         }
 
         String company = null;
-        if(request.getParameter("company").isEmpty()){
+        if (request.getParameter("company").isEmpty()) {
             errorString.append("Enter company. ");
         } else {
             company = request.getParameter("company");
         }
 
         double maxFlightAltitude = 0;
-        if(request.getParameter("maxFlightAltitude").isEmpty()  || Double.parseDouble(request.getParameter("maxFlightAltitude"))<=0){
+        if (request.getParameter("maxFlightAltitude").isEmpty() || Double.parseDouble(request.getParameter("maxFlightAltitude")) <= 0) {
             errorString.append("Enter correct max flight altitude. ");
         } else {
             maxFlightAltitude = Double.parseDouble(request.getParameter("maxFlightAltitude"));
         }
 
         double maxRangeOfFlight = 0;
-        if(request.getParameter("maxRangeOfFlight").isEmpty()  || Double.parseDouble(request.getParameter("maxRangeOfFlight"))<=0){
+        if (request.getParameter("maxRangeOfFlight").isEmpty() || Double.parseDouble(request.getParameter("maxRangeOfFlight")) <= 0) {
             errorString.append("Enter correct max range of flight. ");
         } else {
             maxRangeOfFlight = Double.parseDouble(request.getParameter("maxRangeOfFlight"));
@@ -92,14 +92,12 @@ public class CreatePlaneServlet extends HttpServlet{
             plane.setCompany(company);
             plane.setMaxFlightAltitude(maxFlightAltitude);
             plane.setMaxRangeOfFlight(maxRangeOfFlight);
-            plane = PlaneService.getInstance().create(plane);
-            if (plane.getId() != 0L) {
-                RequestDispatcher dispatcher = this.getServletContext()
-                        .getRequestDispatcher("/views/homeView.jsp");
-                dispatcher.forward(request, response);
-            } else {
-                errorString.append("Can't add plane. ");
-            }
+            PlaneService.getInstance().create(plane);
+
+            RequestDispatcher dispatcher = this.getServletContext()
+                    .getRequestDispatcher("/views/homeView.jsp");
+            dispatcher.forward(request, response);
+
         }
         request.setAttribute("errorString", errorString);
         RequestDispatcher dispatcher = this.getServletContext()

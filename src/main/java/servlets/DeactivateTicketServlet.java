@@ -2,6 +2,7 @@ package servlets;
 
 import services.TicketService;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,7 +23,15 @@ public class DeactivateTicketServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        TicketService.getInstance().deactivate(Integer.parseInt(request.getParameter("ticketId")));
-        response.sendRedirect(request.getContextPath() + "/showMyTickets");
+        request.setAttribute("ticketId", Integer.parseInt(request.getParameter("ticketId")));
+        RequestDispatcher dispatcher
+                = this.getServletContext().getRequestDispatcher("/views/confirmDeactivate.jsp");
+        dispatcher.forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        TicketService.getInstance().deactivate(Integer.parseInt(req.getParameter("ticketId")));
+        resp.sendRedirect(req.getContextPath() + "/showMyTickets");
     }
 }

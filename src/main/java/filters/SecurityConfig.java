@@ -18,22 +18,22 @@ public class SecurityConfig {
         // Конфигурация для роли "USER".
         List<String> urlPatterns1 = new ArrayList<>();
 
-        urlPatterns1.add("/showMyTickets");
-        urlPatterns1.add("/findFlight");
-        urlPatterns1.add("/chooseDifficultWay");
-        urlPatterns1.add("/chooseFlight");
-        urlPatterns1.add("/deactivate");
-        urlPatterns1.add("/showPlane");
-        urlPatterns1.add("/showSeats");
+      //  urlPatterns1.add("/showMyTickets");
+     //   urlPatterns1.add("/findFlight");
+      //  urlPatterns1.add("/chooseDifficultWay");
+     //   urlPatterns1.add("/chooseFlight");
+      //  urlPatterns1.add("/deactivate");
+    //    urlPatterns1.add("/showPlane");
+    //    urlPatterns1.add("/showSeats");
 
         mapConfig.put(Role.USER, urlPatterns1);
 
         // Конфигурация для роли "ADMIN".
         List<String> urlPatterns2 = new ArrayList<>();
 
-        urlPatterns2.add("/makeAdmin");
-        urlPatterns2.add("/createPlane");
-        urlPatterns2.add("/createFlight");
+    //    urlPatterns2.add("/makeAdmin");
+     //   urlPatterns2.add("/createPlane");
+     //   urlPatterns2.add("/createFlight");
 
         mapConfig.put(Role.ADMIN, urlPatterns2);
     }

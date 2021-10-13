@@ -1,15 +1,40 @@
 package entities;
 
-public class Plane extends BaseEntity {
+import javax.persistence.*;
+
+@Entity
+@Table(name = "planes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id") })
+public class Plane{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+       @Column(name = "numberofseats")
     private int numberOfSeats;
+       @Column(name = "weight")
     private double weight;
+       @Column(name = "cruisingspeed")
     private double cruisingSpeed;
+      @Column(name = "model", length = 250)
     private String model;
+      @Column(name = "company", length = 250)
     private String company;
+       @Column(name = "maxflightaltitude")
     private double maxFlightAltitude;
+       @Column(name = "maxrangeofflight")
     private double maxRangeOfFlight;
 
     public Plane() {
+    }
+
+    public Plane(int numberOfSeats, double weight, double cruisingSpeed, String model, String company, double maxFlightAltitude, double maxRangeOfFlight) {
+        this.numberOfSeats = numberOfSeats;
+        this.weight = weight;
+        this.cruisingSpeed = cruisingSpeed;
+        this.model = model;
+        this.company = company;
+        this.maxFlightAltitude = maxFlightAltitude;
+        this.maxRangeOfFlight = maxRangeOfFlight;
     }
 
     public int getNumberOfSeats() {
@@ -66,6 +91,14 @@ public class Plane extends BaseEntity {
 
     public void setMaxRangeOfFlight(double maxRangeOfFlight) {
         this.maxRangeOfFlight = maxRangeOfFlight;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override

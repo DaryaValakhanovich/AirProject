@@ -76,7 +76,16 @@
             <td>Final airport</td>
             <td><input type="text" name="finalAirport" value="${finalAirport}" /></td>
         </tr>
-        Plane
+    </table>
+    <table border="0">
+        <tr>
+            <td colspan="3">Choose plane:</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Plane id</td>
+            <td>Plane model</td>
+        </tr>
         <c:forEach items="${planes}" var="plane">
             <tr>
                 <td><input type="radio" name="planeId" value=${plane.id}></td>

@@ -17,8 +17,6 @@
 
         <!-- User store in session with attribute: loginedUser -->
         Hello <b> ${loginedUser.email}</b>
-        <br/>
-        Search <input name="search">
 
     </div>
 

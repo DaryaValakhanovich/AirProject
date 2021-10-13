@@ -3,8 +3,6 @@ package services;
 import dao.PlaneDao;
 import entities.Plane;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlaneService {
@@ -14,26 +12,21 @@ public class PlaneService {
     private static final class PlaneServiceHolder {
         private static final PlaneService INSTANCE = new PlaneService();
     }
+    PlaneDao planeDao = new PlaneDao();
 
     public static PlaneService getInstance() {
         return PlaneService.PlaneServiceHolder.INSTANCE;
     }
 
-    public Plane findById(long id){
-        return PlaneDao.getInstance().findById(id).orElse(null);
+    public Plane findById(Integer id){
+        return planeDao.findById(id);
     }
 
     public List<Plane> findAll(){
-        List<Plane> planes = new ArrayList<>();
-        try {
-            planes = PlaneDao.getInstance().findAll();
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-        return planes;
+        return planeDao.findAll();
     }
 
-    public Plane create(Plane plane){
-        return PlaneDao.getInstance().create(plane);
+    public void create(Plane plane){
+        planeDao.save(plane);
     }
 }

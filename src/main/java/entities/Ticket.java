@@ -1,21 +1,52 @@
 package entities;
 
-public class Ticket extends BaseEntity {
-    private long accountId;
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "tickets", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id") })
+public class Ticket{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @ManyToOne
+    @JoinColumn(name="accountid", nullable=false)
+    private Account account;
+    @ManyToOne
+    @JoinColumn(name="flightid")
     private Flight flight;
+    @Column(name = "numberOfSeats")
     private int numberOfSeats;
+    @Column(name = "active")
     private boolean active;
+
+    public Ticket(Account account, Flight flight, int numberOfSeats) {
+        this.account = account;
+        this.flight = flight;
+        this.numberOfSeats = numberOfSeats;
+        active = true;
+    }
+
 
     public Ticket() {
         active = true;
     }
 
-    public long getAccountId() {
-        return accountId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public Flight getFlight() {
@@ -45,7 +76,7 @@ public class Ticket extends BaseEntity {
     @Override
     public String toString() {
         return "Ticket{" +
-                "accountId=" + accountId +
+                "accountId=" + account+
                 ", flight=" + flight +
                 ", numberOfSeats=" + numberOfSeats +
                 ", active=" + active +
